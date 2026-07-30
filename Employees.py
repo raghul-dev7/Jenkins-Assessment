@@ -1,61 +1,72 @@
-# Employee Performance Evaluation
+import java.util.*;
 
-employees = [
-    ["Ramesh", "IT", 90, 95, 88],
-    ["Suresh", "HR", 75, 80, 78],
-    ["Anitha", "IT", 85, 90, 92],
-    ["Kiran", "Sales", 65, 70, 68],
-    ["Meena", "HR", 95, 98, 96]
-]
+class Employee {
+    String name, department;
+    int productivity, attendance, teamwork;
+    double score;
+    String rating;
 
-print("EMPLOYEE PERFORMANCE")
-print("-" * 40)
+    Employee(String name, String department, int productivity, int attendance, int teamwork) {
+        this.name = name;
+        this.department = department;
+        this.productivity = productivity;
+        this.attendance = attendance;
+        this.teamwork = teamwork;
 
-dept_total = {}
-dept_count = {}
+        score = productivity * 0.5 + attendance * 0.3 + teamwork * 0.2;
 
-for emp in employees:
-    name = emp[0]
-    dept = emp[1]
-    productivity = emp[2]
-    attendance = emp[3]
-    teamwork = emp[4]
+        if (score >= 90)
+            rating = "Excellent";
+        else if (score >= 75)
+            rating = "Good";
+        else if (score >= 60)
+            rating = "Average";
+        else
+            rating = "Poor";
+    }
+}
 
-    score = productivity * 0.5 + attendance * 0.3 + teamwork * 0.2
+public class Employees {
+    public static void main(String[] args) {
 
-    if score >= 90:
-        rating = "Excellent"
-    elif score >= 75:
-        rating = "Good"
-    elif score >= 60:
-        rating = "Average"
-    else:
-        rating = "Poor"
+        Employee[] emp = {
+            new Employee("Ravi", "IT", 90, 95, 85),
+            new Employee("Priya", "HR", 80, 88, 90),
+            new Employee("Karthik", "IT", 70, 75, 72),
+            new Employee("Meena", "Sales", 95, 96, 94),
+            new Employee("Arun", "HR", 65, 70, 68)
+        };
 
-    emp.append(score)
+        System.out.println("Employee Details");
+        System.out.println("------------------------------");
 
-    print("Name      :", name)
-    print("Department:", dept)
-    print("Score     :", round(score, 2))
-    print("Rating    :", rating)
-    print()
+        for (Employee e : emp) {
+            System.out.println("Name       : " + e.name);
+            System.out.println("Department : " + e.department);
+            System.out.println("Score      : " + String.format("%.2f", e.score));
+            System.out.println("Rating     : " + e.rating);
+            System.out.println();
+        }
 
-    if dept in dept_total:
-        dept_total[dept] += score
-        dept_count[dept] += 1
-    else:
-        dept_total[dept] = score
-        dept_count[dept] = 1
+        Arrays.sort(emp, (a, b) -> Double.compare(b.score, a.score));
 
-# Top Three Employees
-employees.sort(key=lambda x: x[5], reverse=True)
+        System.out.println("Top Three Employees");
+        for (int i = 0; i < 3; i++) {
+            System.out.println((i + 1) + ". " + emp[i].name + " - " + String.format("%.2f", emp[i].score));
+        }
 
-print("TOP THREE EMPLOYEES")
-for i in range(3):
-    print(i + 1, ".", employees[i][0], "-", round(employees[i][5], 2))
+        HashMap<String, Double> total = new HashMap<>();
+        HashMap<String, Integer> count = new HashMap<>();
 
-# Department-wise Average
-print("\nDEPARTMENT-WISE AVERAGE SCORE")
-for dept in dept_total:
-    average = dept_total[dept] / dept_count[dept]
-    print(dept, ":", round(average, 2))
+        for (Employee e : emp) {
+            total.put(e.department, total.getOrDefault(e.department, 0.0) + e.score);
+            count.put(e.department, count.getOrDefault(e.department, 0) + 1);
+        }
+
+        System.out.println("\nDepartment-wise Average Score");
+        for (String dept : total.keySet()) {
+            double avg = total.get(dept) / count.get(dept);
+            System.out.println(dept + " : " + String.format("%.2f", avg));
+        }
+    }
+}
